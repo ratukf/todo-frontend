@@ -1,5 +1,5 @@
 import "./App.css";
-import { Container, IconButton, Typography } from "@mui/material";
+import { Container, Grid, IconButton, Typography } from "@mui/material";
 import { TodosList } from "./components/TodosList";
 import { AddCircle } from "@mui/icons-material";
 import { AddTodo } from "./components/AddTodo";
@@ -25,11 +25,14 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Container>
+    <Container className="App">
+      <Grid container direction="column" alignItems="center" spacing={5}>
         <Typography variant="h4" sx={{ my: 2 }}>
           Todo List
         </Typography>
+
+        {/* Add Todo dialog */}
+        <AddTodo isOpen={isAddTodoOpen} handleClose={handleCloseAddTodo} />
 
         {/* List of todos */}
         <TodosList handleClick={handleOpenTodoDetail} />
@@ -38,10 +41,7 @@ function App() {
         <IconButton onClick={handleOpenAddTodo}>
           <AddCircle />
         </IconButton>
-      </Container>
-
-      {/* Add Todo dialog */}
-      <AddTodo isOpen={isAddTodoOpen} handleClose={handleCloseAddTodo} />
+      </Grid>
 
       {/* Todo detail dialog */}
       <TodoDetail
@@ -49,7 +49,7 @@ function App() {
         isOpen={isTodoDetailOpen}
         handleClose={() => setIsTodoDetailOpen(false)}
       />
-    </div>
+    </Container>
   );
 }
 
