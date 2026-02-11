@@ -12,6 +12,7 @@ import {
   Radio,
   Typography,
   Stack,
+  TextField,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { DeleteTodo } from "./DeleteTodo";
@@ -28,6 +29,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState("");
+  const [isEditProblemDesc, setIsEditProblemDesc] = useState(false);
 
   const deleteMutation = useDeleteTodo();
   const updateStatusMutation = useUpdateStatus();
@@ -54,6 +56,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
   useEffect(() => {
     if (!isOpen) {
       setUpdatedStatus("");
+      setIsEditProblemDesc(false);
     }
   }, [isOpen]);
 
@@ -74,12 +77,24 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
                     <Typography variant="body2" color="textSecondary" mt={2}>
                       Problem Description:
                     </Typography>
-                    <Typography variant="body1" mt={2} mb={2}>
-                      {todo.problem_desc}{" "}
-                      <IconButton size="small">
-                        <Edit fontSize="small" />
-                      </IconButton>
-                    </Typography>
+                    {isEditProblemDesc ? (
+                      <TextField
+                        id="outlined-multiline-static"
+                        multiline
+                        fullWidth
+                        defaultValue={todo.problem_desc}
+                      />
+                    ) : (
+                      <Typography variant="body1" mt={2} mb={2}>
+                        {todo.problem_desc}{" "}
+                        <IconButton
+                          size="small"
+                          onClick={() => setIsEditProblemDesc(true)}
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </Typography>
+                    )}
                   </>
                 )}
               </div>
@@ -129,7 +144,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
             Close
           </Button>
           {/* Show Update Status button when updatedStatus is set */}
-          {updatedStatus ? (
+          {updatedStatus || isEditProblemDesc ? (
             <Button
               onClick={() => {
                 handleClose();
@@ -137,7 +152,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
               }}
               variant="contained"
             >
-              Update Status
+              Update
             </Button>
           ) : (
             <IconButton onClick={() => setIsDeleteOpen(true)} color="error">
