@@ -6,6 +6,7 @@ import {
   ListItemButton,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useTodos } from "../hooks/useTodo";
 import { useState } from "react";
@@ -68,8 +69,19 @@ const TodosList = ({ handleClick }) => {
                       alignItems: "center",
                     }}
                   >
-                    <div>{index + 1}</div>
-                    <div>{todo.title}</div>
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                      {index + 1}
+                    </Typography>
+                    {todo.completed === true ? (
+                      <Typography
+                        variant="body1"
+                        sx={{ textDecoration: "line-through" }}
+                      >
+                        {todo.title}
+                      </Typography>
+                    ) : (
+                      <Typography>{todo.title}</Typography>
+                    )}
                   </div>
 
                   {/* Chip*/}
