@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Container, Grid, Typography } from "@mui/material";
+import { TodosList } from "./components/TodosList";
+import { AddTodo } from "./components/AddTodo";
+import { useState } from "react";
+import { TodoDetail } from "./components/TodoDetail";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(advancedFormat);
 
 function App() {
+  const [id, setId] = useState(null);
+  const [isTodoDetailOpen, setIsTodoDetailOpen] = useState(false);
+  const date = dayjs();
+  const formatted = date.format("ddd Do, MMMM");
+  const [weekdayDate, month] = formatted.split(", ");
+
+  const handleOpenTodoDetail = (id) => {
+    setId(id);
+    setIsTodoDetailOpen(true);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Container className="App">
+      <Grid container direction="column" alignItems="center" spacing={5}>
+        <Typography
+          variant="h2"
+          sx={{ my: 2, fontWeight: "900", color: "black" }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          {weekdayDate}, <span style={{ color: "#888" }}>{month}</span>
+        </Typography>
+        {/* Add Todo Textfield */}
+        <AddTodo />
+        {/* List of todos */}
+        <TodosList handleClick={handleOpenTodoDetail} />
+      </Grid>
+
+      {/* Todo detail dialog */}
+      <TodoDetail
+        id={id}
+        isOpen={isTodoDetailOpen}
+        handleClose={() => setIsTodoDetailOpen(false)}
+      />
+    </Container>
   );
 }
 
