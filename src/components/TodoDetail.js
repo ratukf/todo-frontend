@@ -30,6 +30,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState("");
   const [isEditProblemDesc, setIsEditProblemDesc] = useState(false);
+  const [problemDesc, setProblemDesc] = useState("");
 
   const deleteMutation = useDeleteTodo();
   const updateStatusMutation = useUpdateStatus();
@@ -47,9 +48,15 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
     deleteMutation.mutate(id);
   };
 
-  const handleUpdateStatus = (statusKey) => {
-    setUpdatedStatus(statusKey);
-    updateStatusMutation.mutate({ id, statusKey });
+  const handleUpdateStatus = () => {
+    if (updatedStatus !== "problem") {
+      setProblemDesc(null);
+    }
+    updateStatusMutation.mutate({
+      id,
+      statusKey: updatedStatus || null,
+      problemDesc: problemDesc || null,
+    });
   };
 
   // Reset updatedStatus when dialog is closed
@@ -59,6 +66,10 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
       setIsEditProblemDesc(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (todo) setProblemDesc(todo.problem_desc || "");
+  }, [todo]);
 
   return (
     <>
@@ -72,30 +83,37 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
               <div>
                 <h2>{todo.title}</h2>
                 <TodoStatusChips data={todo} />
-                {todo.problem_desc && (
-                  <>
+                {todo.problem === true && (
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    justifyContent={"space-between"}
+                    mt={2}
+                  >
                     <Typography variant="body2" color="textSecondary" mt={2}>
                       Problem Description:
                     </Typography>
-                    {isEditProblemDesc ? (
-                      <TextField
-                        id="outlined-multiline-static"
-                        multiline
-                        fullWidth
-                        defaultValue={todo.problem_desc}
-                      />
-                    ) : (
-                      <Typography variant="body1" mt={2} mb={2}>
-                        {todo.problem_desc}{" "}
-                        <IconButton
-                          size="small"
-                          onClick={() => setIsEditProblemDesc(true)}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Typography>
-                    )}
-                  </>
+                    <IconButton
+                      size="small"
+                      onClick={() => setIsEditProblemDesc(true)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                )}
+                {isEditProblemDesc && todo.problem === true ? (
+                  <TextField
+                    id="outlined-multiline-static"
+                    multiline
+                    fullWidth
+                    value={problemDesc}
+                    onChange={(e) => setProblemDesc(e.target.value)}
+                  />
+                ) : (
+                  <Typography variant="body1" mt={2} mb={2}>
+                    {todo.problem_desc}{" "}
+                  </Typography>
                 )}
               </div>
 
@@ -148,7 +166,7 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
             <Button
               onClick={() => {
                 handleClose();
-                handleUpdateStatus(updatedStatus);
+                handleUpdateStatus();
               }}
               variant="contained"
             >
