@@ -56,8 +56,27 @@ const useUpdateStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, statusKey }) => {
-      const payload = { [statusKey]: true };
+    mutationFn: ({ id, statusKey, problemDesc }) => {
+      const payload = {};
+
+      // Hanya proses kalau statusKey valid
+      if (statusKey) {
+        if (statusKey === "problem") {
+          // Kalau problem, kirim problem true + problem_desc
+          payload.problem = true;
+          payload.problem_desc = problemDesc || null;
+        } else {
+          // Kalau status lain, set status true & hapus problem_desc
+          payload[statusKey] = true;
+          payload.problem = false;
+          payload.problem_desc = null;
+        }
+      } else if (problemDesc) {
+        // Kalau tidak pilih status, tapi isi problem_desc
+        payload.problem = true;
+        payload.problem_desc = problemDesc;
+      }
+
       return updateStatus(id, payload);
     },
     // When success, invalidate both the todos list and the specific todo query
