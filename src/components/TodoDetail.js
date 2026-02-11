@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IconButton,
   Button,
@@ -11,8 +11,9 @@ import {
   FormControlLabel,
   Radio,
   Typography,
+  Stack,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { DeleteTodo } from "./DeleteTodo";
 import { useDeleteTodo, useTodo, useUpdateStatus } from "../hooks/useTodo";
 import { TodoStatusChips } from "./TodoStatusChip";
@@ -66,36 +67,54 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
             <>
               {/* To Do Detail  */}
               <div>
-                <h2>Todo Detail</h2>
-                <p>Title: {todo.title}</p>
+                <h2>{todo.title}</h2>
                 <TodoStatusChips data={todo} />
                 {todo.problem_desc && (
-                  <p>Problem Description: {todo.problem_desc}</p>
+                  <>
+                    <Typography variant="body2" color="textSecondary" mt={2}>
+                      Problem Description:
+                    </Typography>
+                    <Typography variant="body1" mt={2} mb={2}>
+                      {todo.problem_desc}{" "}
+                      <IconButton size="small">
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Typography>
+                  </>
                 )}
               </div>
 
               {/* Update Status */}
               <FormControl>
-                <Typography variant="subtitle1" gutterBottom>
-                  Update Status:
-                </Typography>
-                <RadioGroup
-                  aria-labelledby="status-radio-group"
-                  name="radio-buttons-group"
-                  value={updatedStatus}
-                  onChange={(e) => setUpdatedStatus(e.target.value)}
-                >
-                  {status
-                    .filter((stat) => !todo?.[stat.value])
-                    .map((stat) => (
-                      <FormControlLabel
-                        key={stat.value}
-                        value={stat.value}
-                        control={<Radio />}
-                        label={stat.label}
-                      />
-                    ))}
-                </RadioGroup>
+                <Stack direction="row" spacing={1} mb={2} alignItems={"center"}>
+                  <Typography variant="body2" color="textSecondary">
+                    Update status:
+                  </Typography>
+                  <RadioGroup
+                    aria-labelledby="status-radio-group"
+                    name="radio-buttons-group"
+                    value={updatedStatus}
+                    onChange={(e) => setUpdatedStatus(e.target.value)}
+                    row
+                  >
+                    {status
+                      .filter((stat) => !todo?.[stat.value])
+                      .map((stat) => (
+                        <FormControlLabel
+                          key={stat.value}
+                          value={stat.value}
+                          control={<Radio />}
+                          label={stat.label}
+                          sx={{
+                            "& .MuiFormControlLabel-label": {
+                              typography: "body2",
+                              color: "text.secondary",
+                            },
+                          }}
+                        />
+                      ))}
+                  </RadioGroup>
+                </Stack>
               </FormControl>
             </>
           )}
