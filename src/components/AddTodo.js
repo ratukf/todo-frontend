@@ -14,7 +14,7 @@ const AddTodo = ({ isOpen, handleClose }) => {
   const [title, setTitle] = useState("");
 
   const handleAddTodo = () => {
-    if (!title.trim()) return;
+    if (!title.trim()) return; // Prevent adding empty titles
     addTodoMutation.mutate({ title, status: "pending" });
     setTitle("");
     handleClose();
