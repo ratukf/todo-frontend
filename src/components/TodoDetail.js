@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IconButton,
   Button,
@@ -11,8 +11,10 @@ import {
   FormControlLabel,
   Radio,
   Typography,
+  Stack,
+  TextField,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { DeleteTodo } from "./DeleteTodo";
 import { useDeleteTodo, useTodo, useUpdateStatus } from "../hooks/useTodo";
 import { TodoStatusChips } from "./TodoStatusChip";
@@ -27,6 +29,8 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState("");
+  const [isEditProblemDesc, setIsEditProblemDesc] = useState(false);
+  const [problemDesc, setProblemDesc] = useState("");
 
   const deleteMutation = useDeleteTodo();
   const updateStatusMutation = useUpdateStatus();
@@ -44,17 +48,28 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
     deleteMutation.mutate(id);
   };
 
-  const handleUpdateStatus = (statusKey) => {
-    setUpdatedStatus(statusKey);
-    updateStatusMutation.mutate({ id, statusKey });
+  const handleUpdateStatus = () => {
+    if (updatedStatus !== "problem") {
+      setProblemDesc(null);
+    }
+    updateStatusMutation.mutate({
+      id,
+      statusKey: updatedStatus || null,
+      problemDesc: problemDesc || null,
+    });
   };
 
   // Reset updatedStatus when dialog is closed
   useEffect(() => {
     if (!isOpen) {
       setUpdatedStatus("");
+      setIsEditProblemDesc(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (todo) setProblemDesc(todo.problem_desc || "");
+  }, [todo]);
 
   return (
     <>
@@ -66,36 +81,73 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
             <>
               {/* To Do Detail  */}
               <div>
-                <h2>Todo Detail</h2>
-                <p>Title: {todo.title}</p>
+                <h2>{todo.title}</h2>
                 <TodoStatusChips data={todo} />
-                {todo.problem_desc && (
-                  <p>Problem Description: {todo.problem_desc}</p>
+                {todo.problem === true && (
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    justifyContent={"space-between"}
+                    mt={2}
+                  >
+                    <Typography variant="body2" color="textSecondary" mt={2}>
+                      Problem Description:
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => setIsEditProblemDesc(true)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                )}
+                {isEditProblemDesc && todo.problem === true ? (
+                  <TextField
+                    id="outlined-multiline-static"
+                    multiline
+                    fullWidth
+                    value={problemDesc}
+                    onChange={(e) => setProblemDesc(e.target.value)}
+                  />
+                ) : (
+                  <Typography variant="body1" mt={2} mb={2}>
+                    {todo.problem_desc}{" "}
+                  </Typography>
                 )}
               </div>
 
               {/* Update Status */}
               <FormControl>
-                <Typography variant="subtitle1" gutterBottom>
-                  Update Status:
-                </Typography>
-                <RadioGroup
-                  aria-labelledby="status-radio-group"
-                  name="radio-buttons-group"
-                  value={updatedStatus}
-                  onChange={(e) => setUpdatedStatus(e.target.value)}
-                >
-                  {status
-                    .filter((stat) => !todo?.[stat.value])
-                    .map((stat) => (
-                      <FormControlLabel
-                        key={stat.value}
-                        value={stat.value}
-                        control={<Radio />}
-                        label={stat.label}
-                      />
-                    ))}
-                </RadioGroup>
+                <Stack direction="row" spacing={1} mb={2} alignItems={"center"}>
+                  <Typography variant="body2" color="textSecondary">
+                    Update status:
+                  </Typography>
+                  <RadioGroup
+                    aria-labelledby="status-radio-group"
+                    name="radio-buttons-group"
+                    value={updatedStatus}
+                    onChange={(e) => setUpdatedStatus(e.target.value)}
+                    row
+                  >
+                    {status
+                      .filter((stat) => !todo?.[stat.value])
+                      .map((stat) => (
+                        <FormControlLabel
+                          key={stat.value}
+                          value={stat.value}
+                          control={<Radio />}
+                          label={stat.label}
+                          sx={{
+                            "& .MuiFormControlLabel-label": {
+                              typography: "body2",
+                              color: "text.secondary",
+                            },
+                          }}
+                        />
+                      ))}
+                  </RadioGroup>
+                </Stack>
               </FormControl>
             </>
           )}
@@ -110,15 +162,15 @@ const TodoDetail = ({ id, isOpen, handleClose }) => {
             Close
           </Button>
           {/* Show Update Status button when updatedStatus is set */}
-          {updatedStatus ? (
+          {updatedStatus || isEditProblemDesc ? (
             <Button
               onClick={() => {
                 handleClose();
-                handleUpdateStatus(updatedStatus);
+                handleUpdateStatus();
               }}
               variant="contained"
             >
-              Update Status
+              Update
             </Button>
           ) : (
             <IconButton onClick={() => setIsDeleteOpen(true)} color="error">

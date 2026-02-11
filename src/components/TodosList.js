@@ -1,9 +1,12 @@
 import {
+  Card,
+  Divider,
   List,
   ListItem,
   ListItemButton,
-  Paper,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useTodos } from "../hooks/useTodo";
 import { useState } from "react";
@@ -27,7 +30,14 @@ const TodosList = ({ handleClick }) => {
   };
 
   return (
-    <Paper sx={{ height: 400, width: "100%", overflow: "auto", p: 2 }}>
+    <Card
+      sx={{
+        height: 400,
+        width: "100%",
+        overflow: "auto",
+        p: 2,
+      }}
+    >
       {/* Search Input */}
       <TextField
         label="Search Todos"
@@ -35,6 +45,7 @@ const TodosList = ({ handleClick }) => {
         value={searchInput}
         onChange={handleSearchChange}
         onKeyDown={handleEnterKey}
+        sx={{ mb: 2 }}
       />
 
       {/* Todos list */}
@@ -42,16 +53,49 @@ const TodosList = ({ handleClick }) => {
         {isLoading && <div>Loading...</div>}
         {isError && <div>Error: {error.message}</div>}
         {todos?.map((todo, index) => (
-          <ListItem key={todo.id} disablePadding>
-            <ListItemButton onClick={() => handleClick(todo.id)}>
-              <div>{index + 1}</div>
-              <div>{todo.title}</div>
-              <TodoStatusChips todo={todo} />
-            </ListItemButton>
-          </ListItem>
+          <>
+            <ListItem key={todo.id} disablePadding>
+              <ListItemButton onClick={() => handleClick(todo.id)}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  sx={{ width: "100%", py: 2 }}
+                >
+                  {/* Index & Title */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                      {index + 1}
+                    </Typography>
+                    {todo.completed === true ? (
+                      <Typography
+                        variant="body1"
+                        sx={{ textDecoration: "line-through" }}
+                      >
+                        {todo.title}
+                      </Typography>
+                    ) : (
+                      <Typography>{todo.title}</Typography>
+                    )}
+                  </div>
+
+                  {/* Chip*/}
+                  <div style={{ marginLeft: "auto" }}>
+                    <TodoStatusChips todo={todo} />
+                  </div>
+                </Stack>
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+          </>
         ))}
       </List>
-    </Paper>
+    </Card>
   );
 };
 

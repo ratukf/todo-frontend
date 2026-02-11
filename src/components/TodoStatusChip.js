@@ -8,9 +8,9 @@ const TodoStatusChips = ({ todo, data }) => {
   const activeStatuses = statusKeys.filter((key) => source[key]);
 
   const statusMap = {
-    on_going: { label: "On Going", color: "primary" },
+    on_going: { label: "On Going", color: "success" },
     problem: { label: "Problem", color: "error" },
-    completed: { label: "Completed", color: "success" },
+    completed: { label: "Completed", color: "primary" },
   };
 
   // Only show chips when status is on_going, problem, or completed
