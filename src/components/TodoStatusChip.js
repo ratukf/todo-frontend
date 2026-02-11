@@ -13,6 +13,7 @@ const TodoStatusChips = ({ todo, data }) => {
     completed: { label: "Completed", color: "success" },
   };
 
+  // Only show chips when status is on_going, problem, or completed
   if (activeStatuses.length === 0) return null;
 
   return (
