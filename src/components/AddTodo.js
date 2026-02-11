@@ -25,7 +25,10 @@ const AddTodo = () => {
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <AddCircle />
+                <AddCircle
+                  onClick={handleAddTodo}
+                  style={{ cursor: "pointer" }}
+                />
               </InputAdornment>
             ),
           },
