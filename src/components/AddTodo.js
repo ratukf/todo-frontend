@@ -9,7 +9,7 @@ const AddTodo = () => {
 
   const handleAddTodo = () => {
     if (!title.trim()) return; // Prevent adding empty titles
-    addTodoMutation.mutate({ title, status: "pending" });
+    addTodoMutation.mutate({ title });
     setTitle("");
   };
 
@@ -31,6 +31,12 @@ const AddTodo = () => {
           },
         }}
       />
+      {addTodoMutation.isError && (
+        <div style={{ color: "red" }}>
+          Error: {addTodoMutation.error.message}
+        </div>
+      )}
+      {addTodoMutation.isLoading && <div>Adding todo...</div>}
     </>
   );
 };
