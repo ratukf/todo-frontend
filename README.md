@@ -2,6 +2,12 @@
 
 A minimalistic Todo application built to fulfill a Full Stack technical test. **Node.js version used:** v22.19.0.
 
+![Todo App Screenshot1](src/assets/ui.png)
+
+![Todo App Screenshot2](src/assets/ui2.png)
+
+![Todo App Screenshot3](src/assets/ui3.png)
+
 ## Tech Stack
 
 - **React js**
