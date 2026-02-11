@@ -1,23 +1,13 @@
 import "./App.css";
-import { Container, Grid, IconButton, Typography } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import { TodosList } from "./components/TodosList";
-import { AddCircle } from "@mui/icons-material";
 import { AddTodo } from "./components/AddTodo";
 import { useState } from "react";
 import { TodoDetail } from "./components/TodoDetail";
 
 function App() {
-  const [isAddTodoOpen, setIsAddTodoOpen] = useState(false);
   const [id, setId] = useState(null);
   const [isTodoDetailOpen, setIsTodoDetailOpen] = useState(false);
-
-  const handleOpenAddTodo = () => {
-    setIsAddTodoOpen(true);
-  };
-
-  const handleCloseAddTodo = () => {
-    setIsAddTodoOpen(false);
-  };
 
   const handleOpenTodoDetail = (id) => {
     setId(id);
@@ -31,16 +21,11 @@ function App() {
           Todo List
         </Typography>
 
-        {/* Add Todo dialog */}
-        <AddTodo isOpen={isAddTodoOpen} handleClose={handleCloseAddTodo} />
+        {/* Add Todo Textfield */}
+        <AddTodo />
 
         {/* List of todos */}
         <TodosList handleClick={handleOpenTodoDetail} />
-
-        {/* Button to open Add Todo dialog */}
-        <IconButton onClick={handleOpenAddTodo}>
-          <AddCircle />
-        </IconButton>
       </Grid>
 
       {/* Todo detail dialog */}

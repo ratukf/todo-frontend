@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAddTodo } from "../hooks/useTodo";
 import { AddCircle } from "@mui/icons-material";
 
-const AddTodo = ({ isOpen, handleClose }) => {
+const AddTodo = () => {
   const addTodoMutation = useAddTodo();
   const [title, setTitle] = useState("");
 
@@ -11,7 +11,6 @@ const AddTodo = ({ isOpen, handleClose }) => {
     if (!title.trim()) return; // Prevent adding empty titles
     addTodoMutation.mutate({ title, status: "pending" });
     setTitle("");
-    handleClose();
   };
 
   return (
